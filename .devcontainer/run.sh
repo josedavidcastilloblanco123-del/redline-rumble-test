@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Launch the game on the codespace's virtual desktop (noVNC, port 6080).
 export DISPLAY=:1
-export WINEARCH=win32
 export WINEPREFIX="$HOME/.wine"
 export WINEDLLOVERRIDES="mscoree,mshtml="   # skip Mono/Gecko install prompts
 cd "$HOME/game"
