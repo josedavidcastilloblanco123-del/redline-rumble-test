@@ -1,0 +1,24 @@
+
+xwininfo: Window id: 0x21f (the root window) (has no name)
+
+  Root window id: 0x21f (the root window) (has no name)
+  Parent window id: 0x0 (none)
+     17 children:
+     0x600007 "Burnin' Rubber 3": ("rr4.exe" "rr4.exe")  279x369+372+212  +372+212
+     0x600008 (has no name): ("rr4.exe" "rr4.exe")  69x67+512+535  +512+535
+     0x600005 "Burnin' Rubber 3": ("rr4.exe" "rr4.exe")  1x1+511+383  +511+383
+     0x600004 (has no name): ("rr4.exe" "rr4.exe")  1x1+0+0  +0+0
+     0x600001 "Z:|home|vscode|game|RR4.exe": ("rr4.exe" "rr4.exe")  10x10+-10000+-10000  +-10000+-10000
+     0x600002 "Default IME": ("rr4.exe" "rr4.exe")  1x1+0+0  +0+0
+     0x400016 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x800008 (has no name): ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0xa00001 (has no name): ()  1x1+0+0  +0+0
+     0x800007 (has no name): ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0x800006 (has no name): ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0x800005 (has no name): ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0x800004 (has no name): ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0x800002 (has no name): ("explorer.exe" "explorer.exe")  160x20+3+22  +3+22
+     0x800003 "Default IME": ("explorer.exe" "explorer.exe")  1x1+0+0  +0+0
+     0x200035 (has no name): ()  1x1+-1+-1  +-1+-1
+     0x800001 (has no name): ()  1x1+0+0  +0+0
+
