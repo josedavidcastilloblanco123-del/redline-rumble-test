@@ -1,0 +1,25 @@
+name: inspect-zip
+
+# Inspect only: fetch the zip on the runner and list its contents.
+# Nothing is published or uploaded from this workflow.
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gdown
+        run: pip install gdown
+
+      - name: Fetch zip from Google Drive
+        run: gdown "https://drive.google.com/uc?id=1nEmQfVV08R2RB-JhHdhHmoEiewLVA0tk" -O game.zip
+
+      - name: Show file info
+        run: |
+          ls -l game.zip
+          file game.zip
+          sha256sum game.zip
+
+      - name: List zip contents
+        run: unzip -l game.zip
