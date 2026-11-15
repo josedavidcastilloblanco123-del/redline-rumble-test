@@ -9,5 +9,5 @@
   "portsAttributes": {
     "6080": { "label": "Desktop (noVNC)", "onAutoForward": "silent" }
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh"
+  "postCreateCommand": "bash .devcontainer/setup.sh > $HOME/setup.log 2>&1 || echo FAILED >> $HOME/setup.log"
 }
