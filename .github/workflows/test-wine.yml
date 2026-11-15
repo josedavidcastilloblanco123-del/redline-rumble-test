@@ -19,10 +19,12 @@ jobs:
       - name: OS info
         run: cat /etc/os-release
 
+      # Codespaces run lifecycle commands as the "vscode" user, so do the same.
       - name: Run setup.sh (same as postCreateCommand)
         run: |
-          bash .devcontainer/setup.sh > "$HOME/setup.log" 2>&1 || echo FAILED >> "$HOME/setup.log"
-          tail -n 40 "$HOME/setup.log"
+          cp -r . /home/vscode/repo && chown -R vscode:vscode /home/vscode/repo
+          sudo -u vscode -H bash -c 'cd ~/repo && bash .devcontainer/setup.sh > ~/setup.log 2>&1 || echo FAILED >> ~/setup.log'
+          tail -n 15 /home/vscode/setup.log
           wine --version || true
 
       - name: Start virtual screen :1
@@ -33,7 +35,7 @@ jobs:
 
       - name: Run run.sh (same as postStartCommand)
         run: |
-          bash .devcontainer/run.sh
+          sudo -u vscode -H bash -c 'cd ~/repo && bash .devcontainer/run.sh'
           sleep 90
 
       - name: Report
@@ -41,7 +43,7 @@ jobs:
         run: |
           echo "--- processes"; ps aux | grep -iE "wine|RR4" | grep -v grep || true
           echo "--- windows"; DISPLAY=:1 xwininfo -root -tree | grep -vE 'has no name|^\s*$' | head -n 40 || true
-          echo "--- wine.log"; tail -n 80 "$HOME/wine.log" || true
+          echo "--- wine.log"; tail -n 80 /home/vscode/wine.log || true
           DISPLAY=:1 import -window root /tmp/shot.png || true
           convert /tmp/shot.png -resize 512x /tmp/small.jpg || true
           echo "--- screenshot base64 begin"; base64 -w0 /tmp/small.jpg || true; echo; echo "--- screenshot base64 end"
@@ -53,5 +55,5 @@ jobs:
           name: wine-test
           path: |
             /tmp/shot.png
-            ~/setup.log
-            ~/wine.log
+            /home/vscode/setup.log
+            /home/vscode/wine.log
