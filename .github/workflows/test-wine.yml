@@ -1,0 +1,57 @@
+name: test-wine
+
+# Runs the codespace setup + run.sh inside the same devcontainer base image,
+# on a virtual X screen, and reports whether the game window comes up.
+# Only logs and a screenshot leave the runner; the game files are not uploaded.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/redline-rumble-debug-wpmpry]
+    paths: [".devcontainer/**", ".github/workflows/test-wine.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/devcontainers/base:ubuntu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: OS info
+        run: cat /etc/os-release
+
+      - name: Run setup.sh (same as postCreateCommand)
+        run: |
+          bash .devcontainer/setup.sh > "$HOME/setup.log" 2>&1 || echo FAILED >> "$HOME/setup.log"
+          tail -n 40 "$HOME/setup.log"
+          wine --version || true
+
+      - name: Start virtual screen :1
+        run: |
+          sudo apt-get install -y --no-install-recommends xvfb x11-utils imagemagick procps
+          nohup Xvfb :1 -screen 0 1024x768x24 > /tmp/xvfb.log 2>&1 &
+          sleep 3
+
+      - name: Run run.sh (same as postStartCommand)
+        run: |
+          bash .devcontainer/run.sh
+          sleep 90
+
+      - name: Report
+        if: always()
+        run: |
+          echo "--- processes"; ps aux | grep -iE "wine|RR4" | grep -v grep || true
+          echo "--- windows"; DISPLAY=:1 xwininfo -root -tree | grep -vE 'has no name|^\s*$' | head -n 40 || true
+          echo "--- wine.log"; tail -n 80 "$HOME/wine.log" || true
+          DISPLAY=:1 import -window root /tmp/shot.png || true
+          convert /tmp/shot.png -resize 512x /tmp/small.jpg || true
+          echo "--- screenshot base64 begin"; base64 -w0 /tmp/small.jpg || true; echo; echo "--- screenshot base64 end"
+
+      - name: Upload logs + screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wine-test
+          path: |
+            /tmp/shot.png
+            ~/setup.log
+            ~/wine.log
