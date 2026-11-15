@@ -7,7 +7,8 @@
   },
   "forwardPorts": [6080],
   "portsAttributes": {
-    "6080": { "label": "Desktop (noVNC)", "onAutoForward": "silent" }
+    "6080": { "label": "Desktop (noVNC)", "onAutoForward": "openBrowser" }
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh > $HOME/setup.log 2>&1 || echo FAILED >> $HOME/setup.log"
+  "postCreateCommand": "bash .devcontainer/setup.sh > $HOME/setup.log 2>&1 || echo FAILED >> $HOME/setup.log",
+  "postStartCommand": "bash .devcontainer/run.sh"
 }
