@@ -30,6 +30,9 @@ jobs:
       - name: Look for external references in RR4.dcr
         run: |
           unzip -j game.zip "redlinerumble4/RR4.dcr" -d dcr
+          ls -l dcr/RR4.dcr
+          echo "sha1 base32 (same format as Wayback CDX digest):"
+          sha1sum dcr/RR4.dcr | cut -d' ' -f1 | xxd -r -p | base32
           head -c 64 dcr/RR4.dcr | xxd | head -n 4
           echo "--- strings matching url/cast/net keywords ---"
           strings -n 5 dcr/RR4.dcr | grep -iE "http|www\.|\.cst|\.cct|\.dcr|\.dxr|netLoad|getNetText|preloadNet|shockwave" | sort -u | head -n 60
