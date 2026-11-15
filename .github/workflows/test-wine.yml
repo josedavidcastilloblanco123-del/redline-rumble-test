@@ -9,6 +9,9 @@ on:
     branches: [claude/redline-rumble-debug-wpmpry]
     paths: [".devcontainer/**", ".github/workflows/test-wine.yml"]
 
+permissions:
+  contents: write   # only to push the screenshot to a hidden ref (refs/wine-test/latest)
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -37,6 +40,12 @@ jobs:
         run: |
           sudo -u vscode -H bash -c 'cd ~/repo && bash .devcontainer/run.sh'
           sleep 90
+          DISPLAY=:1 import -window root /tmp/shot-1.png || true
+          # Press Enter on whatever window is focused, then look again.
+          sudo apt-get install -y --no-install-recommends xdotool >/dev/null
+          DISPLAY=:1 xdotool key Return || true
+          sleep 20
+          DISPLAY=:1 import -window root /tmp/shot-2.png || true
 
       - name: Report
         if: always()
@@ -47,6 +56,17 @@ jobs:
           DISPLAY=:1 import -window root /tmp/shot.png || true
           convert /tmp/shot.png -resize 512x /tmp/small.jpg || true
           echo "--- screenshot base64 begin"; base64 -w0 /tmp/small.jpg || true; echo; echo "--- screenshot base64 end"
+
+      - name: Push screenshots to refs/wine-test/latest
+        if: always()
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          mkdir -p /tmp/out && cp /tmp/shot*.png /tmp/out/ 2>/dev/null || true
+          tail -n 200 /home/vscode/wine.log > /tmp/out/wine.log 2>/dev/null || true
+          DISPLAY=:1 xwininfo -root -tree > /tmp/out/windows.txt 2>&1 || true
+          cd /tmp/out && git init -q && git add -A
+          git -c user.name=ci -c user.email=ci@localhost commit -qm "wine test ${GITHUB_RUN_ID}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}" HEAD:refs/wine-test/latest
 
       - name: Upload logs + screenshot
         if: always()
